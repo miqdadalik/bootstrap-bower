@@ -1569,10 +1569,23 @@ function ($compile, $parse, $document, $position, dateFilter, dateParser, datepi
           scope.$broadcast('datepicker.focus');
           scope.position = appendToBody ? $position.offset(element) : $position.position(element);
           scope.position.top = scope.position.top + element.prop('offsetHeight');
-
+          scope.parent = angular.element(element.prop('offsetParent'));
           $document.bind('click', documentClickBind);
         } else {
           $document.unbind('click', documentClickBind);
+        }
+      });
+      
+      scope.$watch(function(){
+        return popupEl.prop('clientHeight')
+      }, function(value){
+        if (value) {
+          if ( (value + scope.position.top + scope.parent.prop('offsetTop') + scope.parent.prop('offsetHeight')) >= document.documentElement.clientHeight) {
+            scope.position.top = scope.parent.prop('offsetTop') - value;
+          }
+          else{
+            console.log("dont do")
+          }
         }
       });
 
